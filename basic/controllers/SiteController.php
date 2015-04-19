@@ -8,9 +8,11 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\EntryForm;
 
 class SiteController extends Controller
-{
+{    
+    
     public function behaviors()
     {
         return [
@@ -93,4 +95,32 @@ class SiteController extends Controller
     {
         return $this->render('about');
     }
+    
+    
+    public function actionSay($message = 'Hello')
+    {
+        return $this->render('say',['message'=>$message]);
+    }
+    
+    
+    public function actionTest($message = 'arguments')
+    {
+        return $this->render('test',['message'=>$message]);
+    }
+    
+   public function actionEntry()
+   {
+       $model = new EntryForm();
+       
+       if($model->load(Yii::$app->request->post()) && $model->validate()){
+           //valid data receive in $model
+           
+           //do something meaningful here about $model
+           
+           return $this->render('entry-confirm',['model'=>$model]);
+       }else{
+           //either the page is initally displayed or there is some validation error
+           return $this->render('entry',['model'=>$model]);
+       }
+   }
 }
