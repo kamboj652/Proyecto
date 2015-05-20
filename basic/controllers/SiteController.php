@@ -9,12 +9,11 @@ use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\EntryForm;
+use app\models\UserForm;
 
-class SiteController extends Controller
-{    
-    
-    public function behaviors()
-    {
+class SiteController extends Controller {
+
+    public function behaviors() {
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -36,8 +35,7 @@ class SiteController extends Controller
         ];
     }
 
-    public function actions()
-    {
+    public function actions() {
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
@@ -49,13 +47,11 @@ class SiteController extends Controller
         ];
     }
 
-    public function actionIndex()
-    {
+    public function actionIndex() {
         return $this->render('index');
     }
 
-    public function actionLogin()
-    {
+    public function actionLogin() {
         if (!\Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -65,20 +61,18 @@ class SiteController extends Controller
             return $this->goBack();
         } else {
             return $this->render('login', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
 
-    public function actionLogout()
-    {
+    public function actionLogout() {
         Yii::$app->user->logout();
 
         return $this->goHome();
     }
 
-    public function actionContact()
-    {
+    public function actionContact() {
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
             Yii::$app->session->setFlash('contactFormSubmitted');
@@ -86,41 +80,49 @@ class SiteController extends Controller
             return $this->refresh();
         } else {
             return $this->render('contact', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
 
-    public function actionAbout()
-    {
+    public function actionAbout() {
         return $this->render('about');
     }
-    
-    
-    public function actionSay($message = 'Hello')
-    {
-        return $this->render('say',['message'=>$message]);
+
+    public function actionSay($message = 'Hello') {
+        return $this->render('say', ['message' => $message]);
     }
-    
-    
-    public function actionTest($message = 'arguments')
-    {
-        return $this->render('test',['message'=>$message]);
+
+    public function actionFarewall($message = 'Bye') {
+        return $this->render('farewall', ['message' => $message]);
     }
-    
-   public function actionEntry()
-   {
-       $model = new EntryForm();
-       
-       if($model->load(Yii::$app->request->post()) && $model->validate()){
-           //valid data receive in $model
-           
-           //do something meaningful here about $model
-           
-           return $this->render('entry-confirm',['model'=>$model]);
-       }else{
-           //either the page is initally displayed or there is some validation error
-           return $this->render('entry',['model'=>$model]);
-       }
-   }
+
+    public function actionTest($message = 'arguments') {
+        return $this->render('test', ['message' => $message]);
+    }
+
+    public function actionEntry() {
+        $model = new EntryForm();
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            //valid data receive in $model
+            //do something meaningful here about $model
+
+            return $this->render('entry-confirm', ['model' => $model]);
+        } else {
+            //either the page is initally displayed or there is some validation error
+            return $this->render('entry', ['model' => $model]);
+        }
+    }
+
+    public function actionUserEntry() {
+        $model = new UserForm();
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) 
+        {
+            return $this->render('entry-confirm',['model'=>$model]);
+        }else{
+            return $this->render('entry',['model'=>$model]);
+        }
+    }
+
 }

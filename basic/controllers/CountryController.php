@@ -6,6 +6,7 @@ use yii\web\Controller;
 use yii\data\Pagination;
 use app\models\Country;
 
+
 class CountryController extends Controller
 {
     public function actionIndex()
@@ -26,5 +27,18 @@ class CountryController extends Controller
             'countries' => $countries,
             'pagination' => $pagination,
         ]);
+    }
+    
+    public function behaviors() {
+        return[
+            [
+                'class'=>'yii\filters\HttpCache',
+                'only'=>['index','view'],
+                'lasModified'=> function($action,$params){
+                    $q = new \yii\db\Query();
+                    return $q->from('user')->max('upadated_at');
+                },
+            ],
+        ];
     }
 }
